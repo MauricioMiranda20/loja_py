@@ -1,3 +1,9 @@
+from functools import partial
+
+def print_ite(iterator):
+    print(*list(iterator),sep='\n')
+    print()
+
 produtos = [
     {'nome': 'Produto 5', 'preco': 10.00},
     {'nome': 'Produto 1', 'preco': 22.32},
@@ -6,9 +12,16 @@ produtos = [
     {'nome': 'Produto 4', 'preco': 69.90},
 ]
 
-novo_produto = [{**produto,'preco': produto['preco'] * 0.10 + produto['preco']}
-                for produto in produtos
-                ]
+def valor_acima_de_cem(valor,porcentage):
+    if valor > 100:
+        return f'{round(valor*porcentage,2)+valor:.2f}'
+    return f'{valor:.2f}'
 
-for chave in novo_produto:
-    print(f"{chave['nome']} : R${chave['preco']:.2f}")
+valor_preco = partial(valor_acima_de_cem,porcentage=0.05)
+
+def mudar_preco_acima_de_cen(produto):
+    return {**produto,'preco':valor_preco(produto['preco'])}
+
+valor = list(map(mudar_preco_acima_de_cen,produtos))
+
+print_ite(valor)
